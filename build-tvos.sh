@@ -16,14 +16,17 @@ cmake libdatachannel\
   -G Xcode\
   -DCMAKE_TOOLCHAIN_FILE=../ios-cmake/ios.toolchain.cmake\
   -DPLATFORM=TVOS\
-  -DBUILD_SHARED_LIBS=OFF
-  -DCMAKE_BUILD_TYPE=Release\
-  -DUSE_GNUTLS=0\
-  -DUSE_NICE=0
+  -DBUILD_SHARED_LIBS=OFF\
+  -DBUILD_SHARED_DEPS_LIBS=OFF\
+  -DNO_EXAMPLES=YES\
+  -DNO_TESTS=YES
 cmake --build $BUILD --config Release
 
 libtool -static -o $BUILD/libdatachannel.a\
   $BUILD/Release-appletvos/libdatachannel.a\
+  $BUILD/deps/libsrtp/Release-appletvos/libsrtp2.a\
+  $BUILD/deps/usrsctp/usrsctplib/Release-appletvos/libusrsctp.a\
+  $BUILD/deps/libjuice/Release-appletvos/libjuice.a\
   $OPENSSL_ROOT_DIR/lib/*.a
 
 export OPENSSL_ROOT_DIR=$(pwd)/OpenSSL/appletvsimulator
@@ -34,12 +37,15 @@ cmake libdatachannel\
   -G Xcode\
   -DCMAKE_TOOLCHAIN_FILE=../ios-cmake/ios.toolchain.cmake\
   -DPLATFORM=SIMULATORARM64_TVOS\
-  -DBUILD_SHARED_LIBS=OFF
-  -DCMAKE_BUILD_TYPE=Release\
-  -DUSE_GNUTLS=0\
-  -DUSE_NICE=0
+  -DBUILD_SHARED_LIBS=OFF\
+  -DBUILD_SHARED_DEPS_LIBS=OFF\
+  -DNO_EXAMPLES=YES\
+  -DNO_TESTS=YES
 cmake --build $BUILD --config Release
 
 libtool -static -o $BUILD/libdatachannel.a\
   $BUILD/Release-appletvsimulator/libdatachannel.a\
+  $BUILD/deps/libsrtp/Release-appletvsimulator/libsrtp2.a\
+  $BUILD/deps/usrsctp/usrsctplib/Release-appletvsimulator/libusrsctp.a\
+  $BUILD/deps/libjuice/Release-appletvsimulator/libjuice.a\
   $OPENSSL_ROOT_DIR/lib/*.a

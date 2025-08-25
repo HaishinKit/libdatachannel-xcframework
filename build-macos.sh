@@ -16,12 +16,15 @@ cmake libdatachannel\
   -G Xcode\
   -DCMAKE_TOOLCHAIN_FILE=../ios-cmake/ios.toolchain.cmake\
   -DPLATFORM=MAC_ARM64\
-  -DBUILD_SHARED_LIBS=OFF
-  -DCMAKE_BUILD_TYPE=Release\
-  -DUSE_GNUTLS=0\
-  -DUSE_NICE=0
+  -DBUILD_SHARED_LIBS=OFF\
+  -DBUILD_SHARED_DEPS_LIBS=OFF\
+  -DNO_EXAMPLES=YES\
+  -DNO_TESTS=YES
 cmake --build $BUILD --config Release
 
 libtool -static -o $BUILD/libdatachannel.a\
   $BUILD/Release/libdatachannel.a\
+  $BUILD/deps/libsrtp/Release/libsrtp2.a\
+  $BUILD/deps/usrsctp/usrsctplib/Release/libusrsctp.a\
+  $BUILD/deps/libjuice/Release/libjuice.a\
   $OPENSSL_ROOT_DIR/lib/*.a

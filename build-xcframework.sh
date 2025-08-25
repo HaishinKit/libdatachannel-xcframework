@@ -13,7 +13,7 @@ mkdir -p include/libdatachannel
 #   https://github.com/shogo4405/HaishinKit.swift/discussions/1403
 #   https://github.com/jessegrosjean/swift-cargo-problem
 cp -r libdatachannel/include/rtc include/libdatachannel
-cp module.modulemap include/libdatachannel/rtc/module.modulemap
+cp module.modulemap include/libdatachannel/module.modulemap
 
 rm -rf libdatachannel.xcframework
 xcodebuild -create-xcframework \
@@ -23,6 +23,6 @@ xcodebuild -create-xcframework \
     -library ./build/iphonesimulator/libdatachannel.a -headers include \
     -library ./build/macosx/libdatachannel.a -headers include \
     -library ./build/visionos/libdatachannel.a -headers include \
-    -library ./build/visionossimulator/libdatachannel.a -headers include \
+    -library ./build/visionsimulator/libdatachannel.a -headers include \
     -output libdatachannel.xcframework
 

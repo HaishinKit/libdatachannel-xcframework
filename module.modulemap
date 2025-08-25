@@ -1,5 +1,5 @@
 module libdatachannel {
-    header "rtc.h"
+    header "rtc/rtc.h"
     export *
 }
 
