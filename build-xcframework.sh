@@ -24,5 +24,10 @@ xcodebuild -create-xcframework \
     -library ./build/macosx/libdatachannel.a -headers include \
     -library ./build/visionos/libdatachannel.a -headers include \
     -library ./build/visionsimulator/libdatachannel.a -headers include \
+    -library ./build/watchos/libdatachannel.a -headers include \
+    -library ./build/watchsimulator/libdatachannel.a -headers include \
     -output libdatachannel.xcframework
+
+zip -r libdatachannel.xcframework.zip libdatachannel.xcframework
+swift package compute-checksum libdatachannel.xcframework.zip
 

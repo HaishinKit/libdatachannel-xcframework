@@ -11,7 +11,7 @@ if which $(pwd)/libdatachannel >/dev/null; then
 else
   git clone git@github.com:paullouisageneau/libdatachannel.git
   pushd libdatachannel
-  git checkout refs/tags/v0.23.1
+  git checkout refs/tags/v0.23.2
   git submodule update --init --recursive --depth 1
   popd
 fi
@@ -20,6 +20,9 @@ if which $(pwd)/OpenSSL >/dev/null; then
   echo ""
 else
   git clone git@github.com:krzyzanowskim/OpenSSL.git
+  pushd OpenSSL
+  git checkout refs/tags/3.3.3001
+  popd
 fi
 
 if which $(pwd)/ios-cmake >/dev/null; then

@@ -6,8 +6,6 @@
 # This source code is licensed under the BSD 3-Clause License found in the
 # LICENSE file in the root directory of this source tree.
 
-export IPHONEOS_DEPLOYMENT_TARGET=13.0
-
 export OPENSSL_ROOT_DIR=$(pwd)/OpenSSL/iphoneos
 BUILD=build/iphoneos
 
