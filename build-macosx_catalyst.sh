@@ -18,11 +18,18 @@ cmake libdatachannel\
   -DBUILD_SHARED_DEPS_LIBS=OFF\
   -DNO_EXAMPLES=YES\
   -DNO_TESTS=YES
-cmake --build $BUILD --config Release
 
-libtool -static -o $BUILD/libdatachannel.a\
+xcodebuild \
+  -project $BUILD/libdatachannel.xcodeproj \
+  -scheme datachannel \
+  -configuration Release \
+  -destination "generic/platform=macOS,variant=Mac Catalyst,name=Any Mac"
+
+libtool -static -o $BUILD/libdatachannel-all.a\
   $BUILD/Release/libdatachannel.a\
   $BUILD/deps/libsrtp/Release/libsrtp2.a\
   $BUILD/deps/usrsctp/usrsctplib/Release/libusrsctp.a\
   $BUILD/deps/libjuice/Release/libjuice.a\
   $OPENSSL_ROOT_DIR/lib/*.a
+
+lipo $BUILD/libdatachannel-all.a -thin arm64 -output $BUILD/libdatachannel.a 

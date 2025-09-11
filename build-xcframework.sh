@@ -22,6 +22,7 @@ xcodebuild -create-xcframework \
     -library ./build/iphoneos/libdatachannel.a -headers include \
     -library ./build/iphonesimulator/libdatachannel.a -headers include \
     -library ./build/macosx/libdatachannel.a -headers include \
+    -library ./build/macosx_catalyst/libdatachannel.a -headers include \
     -library ./build/visionos/libdatachannel.a -headers include \
     -library ./build/visionsimulator/libdatachannel.a -headers include \
     -library ./build/watchos/libdatachannel.a -headers include \
