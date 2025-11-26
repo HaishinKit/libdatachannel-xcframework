@@ -7,7 +7,7 @@
 ## 🌏 Requirements
 |iOS|tvOS|macOS|visionOS|watchOS|Mac Catalyst|
 |:-:|:-:|:-:|:-:|:-:|:-:|
-|13.0+|13.0+|10.15+|1.0+|6.0+|13.1+|
+|13.0+|13.0+|10.15+|1.0+|6.0+|14.0+|
 
 ## 📖 Getting Started
 ### 🔧 Swift Package Manager
