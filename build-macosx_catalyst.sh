@@ -19,6 +19,11 @@ cmake libdatachannel\
   -DNO_EXAMPLES=YES\
   -DNO_TESTS=YES
 
+pbxproj="$BUILD/libdatachannel.xcodeproj/project.pbxproj"
+if grep -q "MACOSX_DEPLOYMENT_TARGET" "$pbxproj"; then
+    sed -i '' 's/MACOSX_DEPLOYMENT_TARGET = [0-9.]*/IPHONEOS_DEPLOYMENT_TARGET = 14.0/g' "$pbxproj"
+fi
+
 xcodebuild \
   -project $BUILD/libdatachannel.xcodeproj \
   -scheme datachannel \

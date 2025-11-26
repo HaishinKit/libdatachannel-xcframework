@@ -11,7 +11,7 @@ if which $(pwd)/libdatachannel >/dev/null; then
 else
   git clone git@github.com:paullouisageneau/libdatachannel.git
   pushd libdatachannel
-  git checkout refs/tags/v0.23.2
+  git checkout refs/tags/v0.24.0
   git submodule update --init --recursive --depth 1
   popd
 fi
