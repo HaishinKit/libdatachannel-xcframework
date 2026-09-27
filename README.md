@@ -1,6 +1,6 @@
 # libdatachannel.xcframework
 
-libdatachannel **v0.24.0** for Apple platforms, using the shared
+libdatachannel **[v0.24.6](https://github.com/paullouisageneau/libdatachannel/releases/tag/v0.24.6)** for Apple platforms, using the shared
 [OpenSSL-Package](https://github.com/krzyzanowskim/OpenSSL-Package) dependency
 in the range **3.3.3001..<4.0.0**. This project is maintained for HaishinKit
 and can also be used independently.
@@ -62,8 +62,8 @@ python3 scripts/prepare-openssl.py
 ./build-xcframework.sh
 ```
 
-`build-clone.sh` pins v0.24.0 and its submodules. It refuses to overwrite local
-source changes. OpenSSL and ios-cmake source checkouts are no longer required.
+`build-clone.sh` pins v0.24.6 and its submodules, including libjuice v1.7.4
+and libSRTP v2.8.0. It refuses to overwrite local source changes. OpenSSL and ios-cmake source checkouts are no longer required.
 The OpenSSL preparation script downloads a checksum-pinned release ZIP and
 verifies its signature. It creates local CMake-compatible header copies and
 library aliases; the signed upstream framework remains unchanged.

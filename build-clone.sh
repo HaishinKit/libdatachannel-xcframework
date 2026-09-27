@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")"
-version=v0.24.0
+version=v0.24.6
 if [ ! -d libdatachannel ]; then
   git clone --branch "$version" --depth 1 https://github.com/paullouisageneau/libdatachannel.git libdatachannel
 fi

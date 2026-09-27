@@ -36,7 +36,7 @@ xcodebuild -create-xcframework \
 mkdir -p libdatachannel.xcframework/Licenses
 cp LICENSES libdatachannel.xcframework/Licenses/THIRD-PARTY-LICENSES.txt
 cat > libdatachannel.xcframework/DEPENDENCIES.json <<'JSON'
-{"libdatachannelVersion":"0.24.0","opensslBuildVersion":"3.3.3","opensslPackage":"https://github.com/krzyzanowskim/OpenSSL-Package.git","opensslPackageRange":"3.3.3001..<4.0.0","opensslBundled":false}
+{"libdatachannelVersion":"0.24.6","opensslBuildVersion":"3.3.3","opensslPackage":"https://github.com/krzyzanowskim/OpenSSL-Package.git","opensslPackageRange":"3.3.3001..<4.0.0","opensslBundled":false}
 JSON
 rm -f libdatachannel.xcframework.zip
 COPYFILE_DISABLE=1 zip -qry libdatachannel.xcframework.zip libdatachannel.xcframework
