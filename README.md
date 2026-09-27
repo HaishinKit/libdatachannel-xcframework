@@ -113,6 +113,40 @@ The same repository holds the build scripts, Swift package, version tags, and
 GitHub Release assets. The build creates `libdatachannel.xcframework`, its ZIP,
 and a `.sha256` file, including bundled-component licenses and metadata.
 
+### Release from GitHub Actions (recommended)
+
+After this workflow is merged into `main`:
+
+1. Open **Actions → Release XCFramework → Run workflow**.
+2. Select **main** and enter a new package version, such as `0.24.6`.
+3. Press **Run workflow**. A successful run publishes the tag and GitHub Release.
+
+The workflow builds all platforms on an Apple silicon macOS 26 runner with
+Xcode 26.6 and CMake 3.31.10, runs link/runtime/package checks, and generates the
+remote manifest. It creates a release commit from the selected source commit,
+adds the version tag to it, and publishes the ZIP in the same workflow.
+Only the tag is pushed; `main` stays on its development manifest. Consumers
+select the published version tag, not the `main` branch.
+
+The input is the **package distribution version**, not a request to fetch a
+different upstream version. Update the pinned libdatachannel version and its
+metadata in a reviewed commit before releasing a new upstream version.
+Only stable versions are accepted (`0.24.6` or `v0.24.6`). Existing tags and
+releases (including drafts) are rejected before building. Runs are serialized.
+The workflow uses the built-in `GITHUB_TOKEN` with `contents: write`; no personal
+access token or signing secret is needed for this static XCFramework. Repository
+or organization rules must allow Actions to create release tags and releases.
+
+Before pushing the tag, the workflow saves a `release-vVERSION` artifact for
+30 days containing the exact ZIP, checksum, and generated manifest. If publication
+fails after the tag was pushed, do **not** rebuild or move the tag: download that
+artifact, check out the existing tag, restore the ZIP/checksum at the repository
+root, and run `./build.sh publish TAG`. If a draft or partial Release already
+exists, inspect and complete it using the saved files rather than rerunning the
+whole workflow or overwriting published assets.
+
+### Release from your Mac
+
 1. Run `./build.sh` and `./build.sh verify`.
 2. Run `./build.sh release v0.24.6` (choose a new, unused version tag).
    This computes the ZIP checksum and writes a remote binary target directly
@@ -149,6 +183,7 @@ committing its new checksum before tagging.
 ./build.sh local
 ./build.sh verify
 python3 tests/verify-release.py
+python3 tests/verify-ci-release.py
 tests/verify-package.sh
 SRT_PACKAGE_PATH=../libsrt-xcframework tests/verify-package.sh
 OPENSSL_PACKAGE_VERSION=3.3.3001 SRT_PACKAGE_PATH=../libsrt-xcframework tests/verify-package.sh
