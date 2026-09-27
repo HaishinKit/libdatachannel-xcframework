@@ -79,6 +79,23 @@ Set `CMAKE=/path/to/cmake` and `JOBS=8` as needed. Builds use native CMake Apple
 platform support.
 `./build.sh help` lists every command.
 
+## Debug symbols
+
+Builds from this revision use `-O3 -DNDEBUG -g` for C and C++, retaining
+Release optimization and embedding DWARF debug information in `libdatachannel.a`.
+This applies to all platforms, including the bundled libjuice, libSRTP, and usrsctp libraries.
+The release checks require DWARF compilation units with line-table references
+in every architecture of the packaged XCFramework. Previously published
+release assets are unchanged; this takes effect in the next release.
+
+These static libraries do not ship a standalone dSYM. Archive the consuming
+application with **Debug Information Format = DWARF with dSYM File**, preserve
+its matching dSYM, and upload it to Firebase Crashlytics. The final app dSYM
+must contain the linked library's debug information; merely updating the
+package does not configure symbol uploads. Optimization can still affect
+inlining and source-line accuracy. OpenSSL's separate upstream dSYM and its
+limitations described above are unchanged.
+
 ## Swift Package Manager
 
 After publishing a release with the workflow below, other libraries can depend
