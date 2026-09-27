@@ -76,7 +76,7 @@ It creates local CMake-compatible header copies and library aliases; the signed
 upstream framework remains unchanged.
 
 Set `CMAKE=/path/to/cmake` and `JOBS=8` as needed. Builds use native CMake Apple
-platform support. The existing `libsrtp.patch` is not required or applied.
+platform support.
 `./build.sh help` lists every command.
 
 ## Swift Package Manager
