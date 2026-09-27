@@ -12,6 +12,7 @@ build_datachannel() {
     echo 'Run python3 scripts/prepare-openssl.py first.' >&2
     return 1
   fi
+  python3 scripts/source-distribution.py record "$build/source-before.json"
   "$CMAKE" -S "$ROOT/libdatachannel" -B "$build" \
     -DCMAKE_SYSTEM_NAME="$system" \
     -DCMAKE_OSX_SYSROOT="$(xcrun --sdk "$sdk" --show-sdk-path)" \
@@ -28,4 +29,6 @@ build_datachannel() {
   xcrun libtool -static -o "$ROOT/build/$output/libdatachannel.a" \
     "$build/libdatachannel.a" "$build/deps/libsrtp/libsrtp2.a" \
     "$build/deps/usrsctp/usrsctplib/libusrsctp.a" "$build/deps/libjuice/libjuice.a"
+  python3 scripts/source-distribution.py record "$ROOT/build/$output/SOURCES.json"
+  cmp "$build/source-before.json" "$ROOT/build/$output/SOURCES.json"
 }
