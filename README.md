@@ -51,38 +51,55 @@ embed another OpenSSL implementation. Migrate dependent packages together.
 Requires Xcode with the relevant SDKs, CMake 3.28+, Python 3, and Git:
 
 ```sh
-./build-clone.sh
-python3 scripts/prepare-openssl.py
-./build-ios.sh
-./build-tvos.sh
-./build-macosx.sh
-./build-macosx_catalyst.sh
-./build-visionos.sh
-./build-watchos.sh
-./build-xcframework.sh
+./build.sh
 ```
 
-`build-clone.sh` pins v0.24.6 and its submodules, including libjuice v1.7.4
-and libSRTP v2.8.0. It refuses to overwrite local source changes. OpenSSL and ios-cmake source checkouts are no longer required.
-The OpenSSL preparation script downloads a checksum-pinned release ZIP and
-verifies its signature. It creates local CMake-compatible header copies and
-library aliases; the signed upstream framework remains unchanged.
+The single entry point prepares sources/OpenSSL, builds all platforms, packages
+the XCFramework, and selects the local development manifest. Implementation
+scripts live in `scripts/build/`; there is no need to invoke them directly.
+Individual steps are also available:
+
+```sh
+./build.sh prepare
+./build.sh build watchos
+./build.sh build             # All platforms
+./build.sh package
+./build.sh local
+./build.sh verify
+```
+
+Source preparation pins v0.24.6 and its submodules, including libjuice v1.7.4
+and libSRTP v2.8.0, and refuses to overwrite local source changes. OpenSSL and
+ios-cmake source checkouts are no longer required. The OpenSSL preparation
+script downloads a checksum-pinned release ZIP and verifies its signature.
+It creates local CMake-compatible header copies and library aliases; the signed
+upstream framework remains unchanged.
 
 Set `CMAKE=/path/to/cmake` and `JOBS=8` as needed. Builds use native CMake Apple
 platform support. The existing `libsrtp.patch` is not required or applied.
+`./build.sh help` lists every command.
 
 ## Swift Package Manager
 
-After building, add this repository as a local package:
+After publishing a release with the workflow below, other libraries can depend
+on this same repository by URL and version, without specifying a checksum:
 
 ```swift
-dependencies: [.package(path: "../libdatachannel-xcframework")],
+dependencies: [
+    .package(url: "https://github.com/HaishinKit/libdatachannel-xcframework.git",
+             exact: "0.24.6")
+],
 targets: [
     .target(name: "MyApp", dependencies: [
         .product(name: "libdatachannel", package: "libdatachannel-xcframework")
     ])
 ]
 ```
+
+The version above is a release example; publish that tag and its ZIP before
+using it. OpenSSL is resolved transitively. No separate package repository is
+needed. For local development, build and run `./build.sh local`, then replace
+the URL dependency with `.package(path: "../libdatachannel-xcframework")`.
 
 Application code continues to use `import libdatachannel`. The `RTC` wrapper
 carries dependencies because a SwiftPM binary target cannot declare them.
@@ -92,23 +109,46 @@ Manifest reaches the app archive.
 
 ## Distribution
 
-The build creates `libdatachannel.xcframework`, its ZIP, and a `.sha256` file.
-The XCFramework includes bundled-component licenses and dependency metadata.
-Generate a release manifest after building:
+The same repository holds the build scripts, Swift package, version tags, and
+GitHub Release assets. The build creates `libdatachannel.xcframework`, its ZIP,
+and a `.sha256` file, including bundled-component licenses and metadata.
 
-```sh
-./prepare-release.sh https://github.com/HaishinKit/libdatachannel-xcframework/releases/download/YOUR_NEW_TAG
-```
+1. Run `./build.sh` and `./build.sh verify`.
+2. Run `./build.sh release v0.24.6` (choose a new, unused version tag).
+   This computes the ZIP checksum and writes a remote binary target directly
+   to the root `Package.swift`, with a copy in `dist/Package.swift`.
+3. Review and commit the release changes, including `Package.swift`, and merge
+   if required by your workflow. Tag that exact commit and push the commit/tag:
 
-Use `dist/Package.swift` in the release commit and publish the matching ZIP.
-The checked-in manifest is for local development after building. Use a new tag
-for this distribution change; do not replace the existing v0.24.0 assets.
-These scripts do not publish releases.
+   ```sh
+   git tag v0.24.6
+   git push origin HEAD
+   git push origin v0.24.6
+   ```
+
+4. From that commit, run `./build.sh publish v0.24.6` to upload the ZIP and its
+   checksum file to this repository's GitHub Releases. This requires an
+   authenticated GitHub CLI (`gh`).
+
+`release` only prepares local files; `publish` is the explicit upload step.
+Publishing checks the manifest URL/checksum, a clean working tree, and matching
+local/remote tags at HEAD. It fails if a release already exists instead of
+replacing its assets. Do not replace existing v0.24.0 assets.
+
+`support/Package.swift` is the development template for both modes. Keep
+platforms, products, and dependencies there. `./build.sh local` restores it to
+the root for local testing; that changes the working tree. Release tags must
+contain the generated remote manifest, never the local one. The initial PR's
+manifest remains local until an actual release is prepared. After release
+preparation, do not rebuild the ZIP without regenerating the manifest and
+committing its new checksum before tagging.
 
 ## Verification
 
 ```sh
-python3 tests/verify-build.py
+./build.sh local
+./build.sh verify
+python3 tests/verify-release.py
 tests/verify-package.sh
 SRT_PACKAGE_PATH=../libsrt-xcframework tests/verify-package.sh
 OPENSSL_PACKAGE_VERSION=3.3.3001 SRT_PACKAGE_PATH=../libsrt-xcframework tests/verify-package.sh
@@ -125,7 +165,7 @@ are not covered by these host-side tests.
 
 ## License
 
-libdatachannel is MPL-2.0. `build-licenses.sh` collects the license texts for
+libdatachannel is MPL-2.0. `scripts/build/build-licenses.sh` collects the license texts for
 libdatachannel and its bundled dependencies into the XCFramework. OpenSSL is
 separately distributed under Apache-2.0. App distributors must preserve the
 applicable notices for all dependencies.

@@ -7,7 +7,7 @@
 # LICENSE file in the root directory of this source tree.
 
 set -euo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/../.."
 
 rm -rf include
 mkdir -p include/libdatachannel
@@ -32,7 +32,7 @@ xcodebuild -create-xcframework \
     -library ./build/watchsimulator/libdatachannel.a -headers include \
     -output libdatachannel.xcframework
 
-./build-licenses.sh
+bash scripts/build/build-licenses.sh
 mkdir -p libdatachannel.xcframework/Licenses
 cp LICENSES libdatachannel.xcframework/Licenses/THIRD-PARTY-LICENSES.txt
 cat > libdatachannel.xcframework/DEPENDENCIES.json <<'JSON'
