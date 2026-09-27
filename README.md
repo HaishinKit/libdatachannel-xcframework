@@ -111,7 +111,18 @@ Manifest reaches the app archive.
 
 The same repository holds the build scripts, Swift package, version tags, and
 GitHub Release assets. The build creates `libdatachannel.xcframework`, its ZIP,
-and a `.sha256` file, including bundled-component licenses and metadata.
+and a `.sha256` file. Source and license assets are generated in `dist/licensing/`:
+
+- `THIRD-PARTY-LICENSES.txt`: original license texts for the six bundled components.
+- `SOURCE-NOTICE.txt`: source-availability notice, revision URLs and modification status.
+- `SOURCES.json`: machine-readable component, license, version/revision and commit inventory.
+- `libdatachannel-sources.zip`: the exact upstream sources, including every pinned submodule.
+- `SHA256SUMS.json`: checksums tying these assets to the binary ZIP.
+
+The first three files are also inside `libdatachannel.xcframework/Licenses/`.
+Both the Actions workflow and `./build.sh publish TAG` upload all five additional
+assets. GitHub's automatic repository source ZIP is not a substitute for this
+source bundle because it does not include the dependency submodule contents.
 
 ### Release from GitHub Actions (recommended)
 
@@ -138,10 +149,12 @@ access token or signing secret is needed for this static XCFramework. Repository
 or organization rules must allow Actions to create release tags and releases.
 
 Before pushing the tag, the workflow saves a `release-vVERSION` artifact for
-30 days containing the exact ZIP, checksum, and generated manifest. If publication
+30 days containing the exact binary ZIP, checksum, generated manifest, and all
+source/license assets. If publication
 fails after the tag was pushed, do **not** rebuild or move the tag: download that
 artifact, check out the existing tag, restore the ZIP/checksum at the repository
-root, and run `./build.sh publish TAG`. If a draft or partial Release already
+root, restore the five source/license assets under `dist/licensing/`, and run
+`./build.sh publish TAG`. If a draft or partial Release already
 exists, inspect and complete it using the saved files rather than rerunning the
 whole workflow or overwriting published assets.
 
@@ -161,7 +174,7 @@ whole workflow or overwriting published assets.
    ```
 
 4. From that commit, run `./build.sh publish v0.24.6` to upload the ZIP and its
-   checksum file to this repository's GitHub Releases. This requires an
+   checksum file and the five source/license assets to this repository's GitHub Releases. This requires an
    authenticated GitHub CLI (`gh`).
 
 `release` only prepares local files; `publish` is the explicit upload step.
@@ -184,6 +197,7 @@ committing its new checksum before tagging.
 ./build.sh verify
 python3 tests/verify-release.py
 python3 tests/verify-ci-release.py
+python3 tests/verify-source-distribution.py
 tests/verify-package.sh
 SRT_PACKAGE_PATH=../libsrt-xcframework tests/verify-package.sh
 OPENSSL_PACKAGE_VERSION=3.3.3001 SRT_PACKAGE_PATH=../libsrt-xcframework tests/verify-package.sh
@@ -198,9 +212,39 @@ OpenSSL package and that the executable links one dynamic OpenSSL framework.
 Device/simulator runtime, on-watch networking, and App Store archive validation
 are not covered by these host-side tests.
 
-## License
+## License and app redistribution
 
-libdatachannel is MPL-2.0. `scripts/build/build-licenses.sh` collects the license texts for
-libdatachannel and its bundled dependencies into the XCFramework. OpenSSL is
+The source packaging step requires clean upstream checkouts at their pinned
+submodule commits. Each architecture records its source inventory before and
+after building; packaging rejects missing or mismatched records. Rebuild all
+platforms after changing a dependency. If you intentionally modify an upstream
+source, extend this process to ship that modified source and accurately declare
+the changes; do not label modified code as unmodified.
+
+For applications distributing this framework:
+
+1. Preserve `THIRD-PARTY-LICENSES.txt` and `SOURCE-NOTICE.txt` in accompanying
+   documentation or app resources accessible to users (for example, an
+   **Open Source Licenses** screen). Add the specific release URL for the
+   version you ship, where its source ZIP is available.
+2. Keep the MPL-2.0 source-availability notice for both libdatachannel and
+   libjuice. Their exact source URLs and commit IDs are recorded in the notice;
+   the source bundle also preserves the original source headers and notices.
+3. Include the license and applicable notices for the **actual resolved
+   OpenSSL version** separately. OpenSSL-Package is external and can resolve to
+   different 3.x versions; this source ZIP does not contain OpenSSL. Check your
+   resolved artifact's licenses/notices and preserve its Privacy Manifest as
+   described above.
+
+SwiftPM does not automatically copy the XCFramework's top-level `Licenses/`
+directory into the final app. Verify that your own app packaging includes these
+notices; importing the package alone is not a license-notice delivery mechanism.
+The MPL obligations concern its covered source and modifications, not automatic
+publication of your entire application's proprietary source. See the
+[Mozilla MPL FAQ](https://www.mozilla.org/en-US/MPL/2.0/FAQ/) and the license texts.
+
+
+libdatachannel is MPL-2.0. `scripts/build/build-licenses.sh` generates the source and license distribution
+for libdatachannel and its bundled dependencies. OpenSSL is
 separately distributed under Apache-2.0. App distributors must preserve the
 applicable notices for all dependencies.
