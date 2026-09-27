@@ -1,36 +1,16 @@
 #!/bin/bash
-
-# Copyright (c) shogo4405 and affiliates.
-# All rights reserved.
-#
-# This source code is licensed under the BSD 3-Clause License found in the
-# LICENSE file in the root directory of this source tree.
-
-if which $(pwd)/libdatachannel >/dev/null; then
-  echo ""
-else
-  git clone git@github.com:paullouisageneau/libdatachannel.git
-  pushd libdatachannel
-  git checkout refs/tags/v0.24.0
-  git submodule update --init --recursive --depth 1
-  popd
+set -euo pipefail
+cd "$(dirname "$0")"
+version=v0.24.0
+if [ ! -d libdatachannel ]; then
+  git clone --branch "$version" --depth 1 https://github.com/paullouisageneau/libdatachannel.git libdatachannel
 fi
-
-if which $(pwd)/OpenSSL >/dev/null; then
-  echo ""
-else
-  git clone git@github.com:krzyzanowskim/OpenSSL.git
-  pushd OpenSSL
-  git checkout refs/tags/3.3.3001
-  popd
+if [ -n "$(git -C libdatachannel status --porcelain)" ]; then
+  echo "Local changes in libdatachannel; commit or stash them first." >&2
+  exit 1
 fi
-
-if which $(pwd)/ios-cmake >/dev/null; then
-  echo ""
-else
-  git clone git@github.com:leetal/ios-cmake.git
-  pushd ios-cmake
-  git checkout refs/tags/4.5.0
-  popd
+if ! git -C libdatachannel rev-parse --verify "$version^{commit}" >/dev/null 2>&1; then
+  git -C libdatachannel fetch --depth 1 origin "refs/tags/$version:refs/tags/$version"
 fi
-
+git -C libdatachannel checkout --detach "$version"
+git -C libdatachannel submodule update --init --recursive --depth 1

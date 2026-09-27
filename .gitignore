@@ -5,3 +5,10 @@ libdatachannel.xcframework
 ios-cmake
 OpenSSL
 libdatachannel.xcframework.zip
+/include/
+/.build/
+/.swiftpm/
+/dist/
+/Package.resolved
+/libdatachannel.xcframework.zip.sha256
+/LICENSES
