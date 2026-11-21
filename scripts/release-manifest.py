@@ -15,7 +15,7 @@ elif mode == 'check-local':
 elif mode in ('release', 'check'):
     tag = sys.argv[2] if len(sys.argv) == 3 else ''
     if not re.fullmatch(r'v?(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)(?:-[0-9A-Za-z]+(?:[.-][0-9A-Za-z]+)*)?', tag):
-        raise SystemExit('Provide a version tag, for example v0.24.6 or v0.24.6-1')
+        raise SystemExit('Provide a version tag, for example v0.24.7 or v0.24.7-1')
     archive = Path('libdatachannel.xcframework.zip')
     checksum = hashlib.sha256(archive.read_bytes()).hexdigest()
     url = f'https://github.com/HaishinKit/libdatachannel-xcframework/releases/download/{tag}/{archive.name}'

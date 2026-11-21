@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Package release version (e.g. 0.24.6; source version is pinned in the repository)'
+        description: 'Package release version (e.g. 0.24.7; source version is pinned in the repository)'
         required: true
         type: string
 

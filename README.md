@@ -1,11 +1,15 @@
-# libdatachannel.xcframework
+# 📦 libdatachannel.xcframework
 
-libdatachannel **[v0.24.6](https://github.com/paullouisageneau/libdatachannel/releases/tag/v0.24.6)** for Apple platforms, using the shared
+[![Release](https://img.shields.io/github/v/release/HaishinKit/libdatachannel-xcframework)](https://github.com/HaishinKit/libdatachannel-xcframework/releases)
+[![Build](https://github.com/HaishinKit/libdatachannel-xcframework/actions/workflows/release.yml/badge.svg)](https://github.com/HaishinKit/libdatachannel-xcframework/actions/workflows/release.yml)
+[![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-orange)](#-swift-package-manager)
+
+libdatachannel **[v0.24.7](https://github.com/paullouisageneau/libdatachannel/releases/tag/v0.24.7)** for Apple platforms, using the shared
 [OpenSSL-Package](https://github.com/krzyzanowskim/OpenSSL-Package) dependency
 in the range **3.3.3001..<4.0.0**. This project is maintained for HaishinKit
 and can also be used independently.
 
-## Platforms
+## 📱 Platforms
 
 | Platform | Minimum | Architecture |
 |---|---|---|
@@ -23,10 +27,9 @@ and can also be used independently.
 There are ten slices and twelve architecture variants. The watchOS device
 slice combines all three architectures. Intel slices are not included.
 The minimums account for the upstream Swift package and the compiler's Apple
-silicon deployment requirements. Compared with the previous README, macOS is
-now explicitly 11.0, visionOS is 1.3, and watchOS is 8.0 (26.0 for full arm64).
+silicon deployment requirements.
 
-## Shared OpenSSL dependency
+## 🔐 Shared OpenSSL dependency
 
 **OpenSSL is no longer embedded in libdatachannel.a.** The SwiftPM source
 wrapper links the upstream dynamic OpenSSL framework and the C++ runtime.
@@ -46,7 +49,7 @@ Older libdatachannel releases bundle OpenSSL. Do not combine those binaries
 with this new package, a separate OpenSSL framework, or other libraries that
 embed another OpenSSL implementation. Migrate dependent packages together.
 
-## Build
+## 🛠️ Build
 
 Requires Xcode with the relevant SDKs, CMake 3.28+, Python 3, and Git:
 
@@ -68,7 +71,7 @@ Individual steps are also available:
 ./build.sh verify
 ```
 
-Source preparation pins v0.24.6 and its submodules, including libjuice v1.7.4
+Source preparation pins v0.24.7 and its submodules, including libjuice v1.7.4
 and libSRTP v2.8.0, and refuses to overwrite local source changes. OpenSSL and
 ios-cmake source checkouts are no longer required. The OpenSSL preparation
 script downloads a checksum-pinned release ZIP and verifies its signature.
@@ -79,7 +82,7 @@ Set `CMAKE=/path/to/cmake` and `JOBS=8` as needed. Builds use native CMake Apple
 platform support.
 `./build.sh help` lists every command.
 
-## Debug symbols
+## 🔎 Debug symbols
 
 Builds from this revision use `-O3 -DNDEBUG -g` for C and C++, retaining
 Release optimization and embedding DWARF debug information in `libdatachannel.a`.
@@ -96,7 +99,7 @@ package does not configure symbol uploads. Optimization can still affect
 inlining and source-line accuracy. OpenSSL's separate upstream dSYM and its
 limitations described above are unchanged.
 
-## Swift Package Manager
+## 📦 Swift Package Manager
 
 After publishing a release with the workflow below, other libraries can depend
 on this same repository by URL and version, without specifying a checksum:
@@ -104,7 +107,7 @@ on this same repository by URL and version, without specifying a checksum:
 ```swift
 dependencies: [
     .package(url: "https://github.com/HaishinKit/libdatachannel-xcframework.git",
-             exact: "0.24.6")
+             exact: "0.24.7")
 ],
 targets: [
     .target(name: "MyApp", dependencies: [
@@ -124,7 +127,7 @@ For manual binary integration, also link the C++ runtime and embed/sign the
 selected upstream `OpenSSL.framework` in the final app. Verify that its Privacy
 Manifest reaches the app archive.
 
-## Distribution
+## 🚀 Distribution
 
 The same repository holds the build scripts, Swift package, version tags, and
 GitHub Release assets. The build creates `libdatachannel.xcframework`, its ZIP,
@@ -141,12 +144,12 @@ Both the Actions workflow and `./build.sh publish TAG` upload all five additiona
 assets. GitHub's automatic repository source ZIP is not a substitute for this
 source bundle because it does not include the dependency submodule contents.
 
-### Release from GitHub Actions (recommended)
+### ⚙️ Release from GitHub Actions (recommended)
 
 After this workflow is merged into `main`:
 
 1. Open **Actions → Release XCFramework → Run workflow**.
-2. Select **main** and enter a new package version, such as `0.24.6`.
+2. Select **main** and enter a new package version, such as `0.24.7`.
 3. Press **Run workflow**. A successful run publishes the tag and GitHub Release.
 
 The workflow builds all platforms on an Apple silicon macOS 26 runner with
@@ -159,7 +162,7 @@ select the published version tag, not the `main` branch.
 The input is the **package distribution version**, not a request to fetch a
 different upstream version. Update the pinned libdatachannel version and its
 metadata in a reviewed commit before releasing a new upstream version.
-Only stable versions are accepted (`0.24.6` or `v0.24.6`). Existing tags and
+Only stable versions are accepted (`0.24.7` or `v0.24.7`). Existing tags and
 releases (including drafts) are rejected before building. Runs are serialized.
 The workflow uses the built-in `GITHUB_TOKEN` with `contents: write`; no personal
 access token or signing secret is needed for this static XCFramework. Repository
@@ -175,22 +178,22 @@ root, restore the five source/license assets under `dist/licensing/`, and run
 exists, inspect and complete it using the saved files rather than rerunning the
 whole workflow or overwriting published assets.
 
-### Release from your Mac
+### 💻 Release from your Mac
 
 1. Run `./build.sh` and `./build.sh verify`.
-2. Run `./build.sh release v0.24.6` (choose a new, unused version tag).
+2. Run `./build.sh release v0.24.7` (choose a new, unused version tag).
    This computes the ZIP checksum and writes a remote binary target directly
    to the root `Package.swift`, with a copy in `dist/Package.swift`.
 3. Review and commit the release changes, including `Package.swift`, and merge
    if required by your workflow. Tag that exact commit and push the commit/tag:
 
    ```sh
-   git tag v0.24.6
+   git tag v0.24.7
    git push origin HEAD
-   git push origin v0.24.6
+   git push origin v0.24.7
    ```
 
-4. From that commit, run `./build.sh publish v0.24.6` to upload the ZIP and its
+4. From that commit, run `./build.sh publish v0.24.7` to upload the ZIP and its
    checksum file and the five source/license assets to this repository's GitHub Releases. This requires an
    authenticated GitHub CLI (`gh`).
 
@@ -207,7 +210,7 @@ manifest remains local until an actual release is prepared. After release
 preparation, do not rebuild the ZIP without regenerating the manifest and
 committing its new checksum before tagging.
 
-## Verification
+## ✅ Verification
 
 ```sh
 ./build.sh local
@@ -229,7 +232,7 @@ OpenSSL package and that the executable links one dynamic OpenSSL framework.
 Device/simulator runtime, on-watch networking, and App Store archive validation
 are not covered by these host-side tests.
 
-## License and app redistribution
+## 📄 License and app redistribution
 
 The source packaging step requires clean upstream checkouts at their pinned
 submodule commits. Each architecture records its source inventory before and

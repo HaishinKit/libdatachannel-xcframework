@@ -7,7 +7,7 @@ import subprocess
 
 version = os.environ.get('RELEASE_VERSION', '')
 if not re.fullmatch(r'v?(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)', version):
-    raise SystemExit('Enter a stable version such as 0.24.6 or v0.24.6')
+    raise SystemExit('Enter a stable version such as 0.24.7 or v0.24.7')
 tag = 'v' + version.removeprefix('v')
 repository = 'HaishinKit/libdatachannel-xcframework'
 refs = subprocess.check_output(['git', 'ls-remote', f'https://github.com/{repository}.git',
