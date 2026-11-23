@@ -4,7 +4,7 @@
 [![Build](https://github.com/HaishinKit/libdatachannel-xcframework/actions/workflows/release.yml/badge.svg)](https://github.com/HaishinKit/libdatachannel-xcframework/actions/workflows/release.yml)
 [![SwiftPM](https://img.shields.io/badge/SwiftPM-compatible-orange)](#-swift-package-manager)
 
-libdatachannel **[v0.24.7](https://github.com/paullouisageneau/libdatachannel/releases/tag/v0.24.7)** for Apple platforms, using the shared
+libdatachannel **[v0.24.8](https://github.com/paullouisageneau/libdatachannel/releases/tag/v0.24.8)** for Apple platforms, using the shared
 [OpenSSL-Package](https://github.com/krzyzanowskim/OpenSSL-Package) dependency
 in the range **3.3.3001..<4.0.0**. This project is maintained for HaishinKit
 and can also be used independently.
@@ -71,7 +71,7 @@ Individual steps are also available:
 ./build.sh verify
 ```
 
-Source preparation pins v0.24.7 and its submodules, including libjuice v1.7.4
+Source preparation pins v0.24.8 and its submodules, including libjuice v1.7.5
 and libSRTP v2.8.0, and refuses to overwrite local source changes. OpenSSL and
 ios-cmake source checkouts are no longer required. The OpenSSL preparation
 script downloads a checksum-pinned release ZIP and verifies its signature.
@@ -107,7 +107,7 @@ on this same repository by URL and version, without specifying a checksum:
 ```swift
 dependencies: [
     .package(url: "https://github.com/HaishinKit/libdatachannel-xcframework.git",
-             exact: "0.24.7")
+             exact: "0.24.8")
 ],
 targets: [
     .target(name: "MyApp", dependencies: [
@@ -149,7 +149,7 @@ source bundle because it does not include the dependency submodule contents.
 After this workflow is merged into `main`:
 
 1. Open **Actions → Release XCFramework → Run workflow**.
-2. Select **main** and enter a new package version, such as `0.24.7`.
+2. Select **main** and enter a new package version, such as `0.24.8`.
 3. Press **Run workflow**. A successful run publishes the tag and GitHub Release.
 
 The workflow builds all platforms on an Apple silicon macOS 26 runner with
@@ -162,7 +162,7 @@ select the published version tag, not the `main` branch.
 The input is the **package distribution version**, not a request to fetch a
 different upstream version. Update the pinned libdatachannel version and its
 metadata in a reviewed commit before releasing a new upstream version.
-Only stable versions are accepted (`0.24.7` or `v0.24.7`). Existing tags and
+Only stable versions are accepted (`0.24.8` or `v0.24.8`). Existing tags and
 releases (including drafts) are rejected before building. Runs are serialized.
 The workflow uses the built-in `GITHUB_TOKEN` with `contents: write`; no personal
 access token or signing secret is needed for this static XCFramework. Repository
@@ -181,19 +181,19 @@ whole workflow or overwriting published assets.
 ### 💻 Release from your Mac
 
 1. Run `./build.sh` and `./build.sh verify`.
-2. Run `./build.sh release v0.24.7` (choose a new, unused version tag).
+2. Run `./build.sh release v0.24.8` (choose a new, unused version tag).
    This computes the ZIP checksum and writes a remote binary target directly
    to the root `Package.swift`, with a copy in `dist/Package.swift`.
 3. Review and commit the release changes, including `Package.swift`, and merge
    if required by your workflow. Tag that exact commit and push the commit/tag:
 
    ```sh
-   git tag v0.24.7
+   git tag v0.24.8
    git push origin HEAD
-   git push origin v0.24.7
+   git push origin v0.24.8
    ```
 
-4. From that commit, run `./build.sh publish v0.24.7` to upload the ZIP and its
+4. From that commit, run `./build.sh publish v0.24.8` to upload the ZIP and its
    checksum file and the five source/license assets to this repository's GitHub Releases. This requires an
    authenticated GitHub CLI (`gh`).
 
